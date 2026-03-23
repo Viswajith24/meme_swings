@@ -1,0 +1,14 @@
+__pycache__/
+*.py[cod]
+*$py.class
+*.env
+.env
+.venv
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Project specific
+curl_out.html
+curl_out2.html

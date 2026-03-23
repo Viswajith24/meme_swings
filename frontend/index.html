@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meme-Swings</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700;900&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <!-- Rolling Ticker -->
+    <div class="ticker-wrap">
+        <div class="ticker" id="ticker-content">
+            <!-- Populated by JS -->
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="var(--color-cyan)" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2L2 9l4 13h12l4-13L12 2z"/>
+                </svg>
+                <span class="logo-text">meme <span class="text-cyan">-swings</span></span>
+            </div>
+            
+            <nav class="nav-pills" id="main-nav">
+                <a href="#" data-target="page-dashboard" class="nav-item active">Dashboard</a>
+                <a href="#" data-target="page-signals" class="nav-item">Signals</a>
+                <a href="#" data-target="page-predictions" class="nav-item">Predictions</a>
+                <a href="#" data-target="page-alerts" class="nav-item">Alerts</a>
+            </nav>
+
+            <div class="live-status">
+                <span class="dot"></span> LIVE • SOCIAL INTELLIGENCE
+            </div>
+        </header>
+
+        <!-- Page: Dashboard (Default) -->
+        <div id="page-dashboard" class="page-content active-page">
+            <section class="hero">
+                <h1>Track the <span class="text-cyan">hype.</span><br>Predict the <span class="text-cyan">swing.</span></h1>
+                <p class="subtitle">Real-time sentiment analysis across X, Reddit & Telegram —<br>powered by AI to surface meme coin momentum before the crowd.</p>
+            </section>
+
+        <!-- Stats Grid -->
+        <section class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-title">COINS TRACKED</div>
+                <div class="stat-value text-cyan" id="stat-coins">...</div>
+                <div class="stat-change text-green">Loading live data</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-title">SOCIAL MENTIONS / HR</div>
+                <div class="stat-value text-cyan" id="stat-social">...</div>
+                <div class="stat-change text-green">Loading live data</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-title">ACTIVE HYPE SIGNALS</div>
+                <div class="stat-value text-pink" id="stat-signals">...</div>
+                <div class="stat-change text-green">Loading live data</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-title">AVG. SENTIMENT SCORE</div>
+                <div class="stat-value text-orange" id="stat-sentiment">...</div>
+                <div class="stat-change text-red">Loading live data</div>
+            </div>
+        </section>
+
+        <!-- AI Analyst Panel -->
+        <section class="ai-panel">
+            <div class="ai-header">
+                <div class="ai-title">🤖 AI SIGNAL ANALYST</div>
+                <div class="badge">claude-powered</div>
+            </div>
+            
+            <div class="ai-input-wrap">
+                <input type="text" id="ai-query" value="will DOGE pump" spellcheck="false">
+                <button id="analyze-btn">Analyze ↗</button>
+            </div>
+
+            <div class="ai-output" id="ai-output">
+                <!-- Populated by JS -->
+            </div>
+        </section>
+        </div> <!-- End Dashboard Page -->
+
+        <!-- Page: Signals -->
+        <div id="page-signals" class="page-content" style="display: none;">
+            <div class="page-header">
+                <div>
+                    <h2><span class="text-cyan">Live</span> Signals</h2>
+                    <p class="page-subtitle">Real-time scanning of social momentum surges and whale activity.</p>
+                </div>
+                <div class="page-header-right">
+                    <div class="live-badge"><span class="dot-sm"></span> SCANNING</div>
+                    <button class="btn-refresh" onclick="loadSignals()">↻ Refresh</button>
+                </div>
+            </div>
+
+            <!-- Signal Stats -->
+            <div class="mini-stats">
+                <div class="mini-stat">
+                    <span class="mini-stat-label">TOTAL SIGNALS</span>
+                    <span class="mini-stat-value text-cyan" id="sig-total">—</span>
+                </div>
+                <div class="mini-stat">
+                    <span class="mini-stat-label">STRONG</span>
+                    <span class="mini-stat-value text-green" id="sig-strong">—</span>
+                </div>
+                <div class="mini-stat">
+                    <span class="mini-stat-label">MODERATE</span>
+                    <span class="mini-stat-value text-orange" id="sig-moderate">—</span>
+                </div>
+                <div class="mini-stat">
+                    <span class="mini-stat-label">WEAK</span>
+                    <span class="mini-stat-value text-muted" id="sig-weak">—</span>
+                </div>
+            </div>
+
+            <!-- Signal Feed -->
+            <div id="signals-feed" class="signals-feed">
+                <div class="loading-state">
+                    <div class="pulse-ring"></div>
+                    <p>Initializing signal scanner...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Page: Predictions -->
+        <div id="page-predictions" class="page-content" style="display: none;">
+            <div class="page-header">
+                <div>
+                    <h2>AI <span class="text-pink">Predictions</span></h2>
+                    <p class="page-subtitle">Forecasts driven by sentiment-volume divergence analysis.</p>
+                </div>
+                <div class="page-header-right">
+                    <div class="live-badge badge-pink"><span class="dot-sm dot-pink"></span> AI ENGINE</div>
+                    <button class="btn-refresh" onclick="loadPredictions()">↻ Refresh</button>
+                </div>
+            </div>
+
+            <!-- Prediction Cards -->
+            <div id="predictions-grid" class="predictions-grid">
+                <div class="loading-state">
+                    <div class="pulse-ring"></div>
+                    <p>Running prediction models...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Page: Alerts -->
+        <div id="page-alerts" class="page-content" style="display: none;">
+            <div class="page-header">
+                <div>
+                    <h2>System <span class="text-orange">Alerts</span></h2>
+                    <p class="page-subtitle">Automated notification triggers and risk warnings.</p>
+                </div>
+                <div class="page-header-right">
+                    <div class="live-badge badge-orange"><span class="dot-sm dot-orange"></span> MONITORING</div>
+                    <button class="btn-refresh" onclick="loadAlerts()">↻ Refresh</button>
+                </div>
+            </div>
+
+            <!-- Alert Summary -->
+            <div class="mini-stats">
+                <div class="mini-stat">
+                    <span class="mini-stat-label">ACTIVE ALERTS</span>
+                    <span class="mini-stat-value text-orange" id="alert-total">—</span>
+                </div>
+                <div class="mini-stat">
+                    <span class="mini-stat-label">CRITICAL</span>
+                    <span class="mini-stat-value text-red" id="alert-critical">—</span>
+                </div>
+                <div class="mini-stat">
+                    <span class="mini-stat-label">HIGH</span>
+                    <span class="mini-stat-value text-pink" id="alert-high">—</span>
+                </div>
+                <div class="mini-stat">
+                    <span class="mini-stat-label">MEDIUM / LOW</span>
+                    <span class="mini-stat-value text-muted" id="alert-low">—</span>
+                </div>
+            </div>
+
+            <!-- Alert Timeline -->
+            <div id="alerts-timeline" class="alerts-timeline">
+                <div class="loading-state">
+                    <div class="pulse-ring"></div>
+                    <p>Scanning for anomalies...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>
