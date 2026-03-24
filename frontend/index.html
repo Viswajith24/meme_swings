@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meme-Swings</title>
+    <title>Meme-Swings — AI-Powered Meme Coin Intelligence</title>
+    <meta name="description" content="Real-time sentiment analysis and AI predictions for meme coins. Track DOGE, SHIB, PEPE, and 12+ more coins with live social intelligence.">
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700;900&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/styles.css">
@@ -69,20 +70,44 @@
             </div>
         </section>
 
-        <!-- AI Analyst Panel -->
-        <section class="ai-panel">
-            <div class="ai-header">
-                <div class="ai-title">🤖 AI SIGNAL ANALYST</div>
-                <div class="badge">claude-powered</div>
-            </div>
-            
-            <div class="ai-input-wrap">
-                <input type="text" id="ai-query" value="will DOGE pump" spellcheck="false">
-                <button id="analyze-btn">Analyze ↗</button>
+        <!-- AI Chatbot Panel -->
+        <section class="chatbot-panel" id="chatbot-panel">
+            <div class="chatbot-header">
+                <div class="chatbot-header-left">
+                    <div class="chatbot-avatar">🤖</div>
+                    <div>
+                        <div class="chatbot-title">MEME-SWINGS AI</div>
+                        <div class="chatbot-subtitle">Real-time coin intelligence powered by live market data</div>
+                    </div>
+                </div>
+                <div class="chatbot-header-right">
+                    <div class="chatbot-status" id="chatbot-status">
+                        <span class="dot-sm"></span> ONLINE
+                    </div>
+                </div>
             </div>
 
-            <div class="ai-output" id="ai-output">
-                <!-- Populated by JS -->
+            <div class="chatbot-messages" id="chatbot-messages">
+                <!-- Messages populated by JS -->
+            </div>
+
+            <!-- Quick Action Chips -->
+            <div class="chatbot-chips" id="chatbot-chips">
+                <button class="chip" data-query="What about DOGE?">🐕 DOGE Analysis</button>
+                <button class="chip" data-query="Top gainers right now">🚀 Top Gainers</button>
+                <button class="chip" data-query="Hype check PEPE">🐸 PEPE Hype</button>
+                <button class="chip" data-query="Market overview">📊 Market Overview</button>
+                <button class="chip" data-query="Who's dumping?">📉 Top Losers</button>
+                <button class="chip" data-query="Analyze SHIB">🦊 SHIB Intel</button>
+            </div>
+
+            <div class="chatbot-input-wrap">
+                <input type="text" id="chatbot-input" placeholder="Ask about any meme coin... (e.g. 'analyze DOGE', 'top gainers')" spellcheck="false">
+                <button id="chatbot-send-btn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <path d="M22 2L11 13M22 2L15 22L11 13L2 9L22 2Z"/>
+                    </svg>
+                </button>
             </div>
         </section>
         </div> <!-- End Dashboard Page -->
@@ -134,7 +159,7 @@
             <div class="page-header">
                 <div>
                     <h2>AI <span class="text-pink">Predictions</span></h2>
-                    <p class="page-subtitle">Forecasts driven by sentiment-volume divergence analysis.</p>
+                    <p class="page-subtitle">Forecasts driven by sentiment-volume divergence analysis across 15 meme coins.</p>
                 </div>
                 <div class="page-header-right">
                     <div class="live-badge badge-pink"><span class="dot-sm dot-pink"></span> AI ENGINE</div>
@@ -156,11 +181,14 @@
             <div class="page-header">
                 <div>
                     <h2>System <span class="text-orange">Alerts</span></h2>
-                    <p class="page-subtitle">Automated notification triggers and risk warnings.</p>
+                    <p class="page-subtitle">Live streaming alerts — new events arrive automatically every few seconds.</p>
                 </div>
                 <div class="page-header-right">
-                    <div class="live-badge badge-orange"><span class="dot-sm dot-orange"></span> MONITORING</div>
-                    <button class="btn-refresh" onclick="loadAlerts()">↻ Refresh</button>
+                    <div class="sse-status" id="sse-status">
+                        <span class="dot-sm dot-orange"></span> CONNECTING...
+                    </div>
+                    <div class="live-badge badge-orange"><span class="dot-sm dot-orange"></span> LIVE FEED</div>
+                    <button class="btn-refresh" onclick="clearAndReconnect()">↻ Clear & Reconnect</button>
                 </div>
             </div>
 
@@ -168,27 +196,27 @@
             <div class="mini-stats">
                 <div class="mini-stat">
                     <span class="mini-stat-label">ACTIVE ALERTS</span>
-                    <span class="mini-stat-value text-orange" id="alert-total">—</span>
+                    <span class="mini-stat-value text-orange" id="alert-total">0</span>
                 </div>
                 <div class="mini-stat">
                     <span class="mini-stat-label">CRITICAL</span>
-                    <span class="mini-stat-value text-red" id="alert-critical">—</span>
+                    <span class="mini-stat-value text-red" id="alert-critical">0</span>
                 </div>
                 <div class="mini-stat">
                     <span class="mini-stat-label">HIGH</span>
-                    <span class="mini-stat-value text-pink" id="alert-high">—</span>
+                    <span class="mini-stat-value text-pink" id="alert-high">0</span>
                 </div>
                 <div class="mini-stat">
                     <span class="mini-stat-label">MEDIUM / LOW</span>
-                    <span class="mini-stat-value text-muted" id="alert-low">—</span>
+                    <span class="mini-stat-value text-muted" id="alert-low">0</span>
                 </div>
             </div>
 
             <!-- Alert Timeline -->
             <div id="alerts-timeline" class="alerts-timeline">
-                <div class="loading-state">
+                <div class="alerts-empty-state" id="alerts-empty">
                     <div class="pulse-ring"></div>
-                    <p>Scanning for anomalies...</p>
+                    <p>Waiting for live alerts stream...</p>
                 </div>
             </div>
         </div>

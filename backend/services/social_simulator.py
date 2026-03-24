@@ -9,7 +9,17 @@ COINS = {
     "shiba-inu": {"tags": ["#SHIB", "$SHIB", "ShibArmy"], "base_sentiment": 0.5},
     "pepe": {"tags": ["#PEPE", "$PEPE", "Pepe"], "base_sentiment": 0.4},
     "dogwifcoin": {"tags": ["#WIF", "$WIF", "dogwifhat"], "base_sentiment": 0.8},
-    "bonk": {"tags": ["#BONK", "$BONK"], "base_sentiment": 0.7}
+    "bonk": {"tags": ["#BONK", "$BONK"], "base_sentiment": 0.7},
+    "floki": {"tags": ["#FLOKI", "$FLOKI", "FlokiArmy"], "base_sentiment": 0.65},
+    "brett": {"tags": ["#BRETT", "$BRETT", "Brett"], "base_sentiment": 0.75},
+    "turbo-token": {"tags": ["#TURBO", "$TURBO", "TurboToken"], "base_sentiment": 0.5},
+    "mog-coin": {"tags": ["#MOG", "$MOG", "MogCoin"], "base_sentiment": 0.6},
+    "neiro-on-eth": {"tags": ["#NEIRO", "$NEIRO"], "base_sentiment": 0.45},
+    "memecoin": {"tags": ["#MEME", "$MEME", "Memecoin"], "base_sentiment": 0.55},
+    "coq-inu": {"tags": ["#COQ", "$COQ", "CoqInu"], "base_sentiment": 0.7},
+    "myro": {"tags": ["#MYRO", "$MYRO"], "base_sentiment": 0.5},
+    "toshi": {"tags": ["#TOSHI", "$TOSHI"], "base_sentiment": 0.55},
+    "baby-doge-coin": {"tags": ["#BABYDOGE", "$BABYDOGE", "BabyDoge"], "base_sentiment": 0.6}
 }
 
 PLATFORMS = ["Twitter", "Reddit", "Telegram"]

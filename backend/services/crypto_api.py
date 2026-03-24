@@ -16,13 +16,13 @@ def get_top_meme_coins():
     if _cache["data"] and (now - _cache["last_updated"]) < CACHE_TTL:
         return _cache["data"]
         
-    # Top meme coins: DOGE, SHIB, PEPE, WIF, BONK
+    # Top meme coins: 15 tracked coins
     url = "https://api.coingecko.com/api/v3/coins/markets"
     params = {
         "vs_currency": "usd",
-        "ids": "dogecoin,shiba-inu,pepe,dogwifcoin,bonk",
+        "ids": "dogecoin,shiba-inu,pepe,dogwifcoin,bonk,floki,brett,turbo-token,mog-coin,neiro-on-eth,memecoin,coq-inu,myro,toshi,baby-doge-coin",
         "order": "market_cap_desc",
-        "per_page": 5,
+        "per_page": 15,
         "page": 1,
         "sparkline": "true"
     }
@@ -40,10 +40,10 @@ def get_top_meme_coins():
                 "symbol": coin["symbol"].upper(),
                 "name": coin["name"],
                 "price": coin["current_price"],
-                "change_24h": coin["price_change_percentage_24h"],
-                "market_cap": coin["market_cap"],
-                "volume_24h": coin["total_volume"],
-                "image": coin["image"],
+                "change_24h": coin.get("price_change_percentage_24h", 0) or 0,
+                "market_cap": coin.get("market_cap", 0) or 0,
+                "volume_24h": coin.get("total_volume", 0) or 0,
+                "image": coin.get("image", ""),
                 "sparkline": coin["sparkline_in_7d"]["price"] if coin.get("sparkline_in_7d") else []
             })
             
@@ -63,5 +63,15 @@ def _get_fallback_data():
         {"id": "shiba-inu", "symbol": "SHIB", "name": "Shiba Inu", "price": 0.000025, "change_24h": 5.1, "market_cap": 15000000000, "volume_24h": 800000000, "image": "", "sparkline": [0.000021, 0.000025]},
         {"id": "pepe", "symbol": "PEPE", "name": "Pepe", "price": 0.000008, "change_24h": -1.2, "market_cap": 3400000000, "volume_24h": 450000000, "image": "", "sparkline": [0.000009, 0.000008]},
         {"id": "dogwifcoin", "symbol": "WIF", "name": "dogwifhat", "price": 2.80, "change_24h": 15.4, "market_cap": 2800000000, "volume_24h": 350000000, "image": "", "sparkline": [2.4, 2.8]},
-        {"id": "bonk", "symbol": "BONK", "name": "Bonk", "price": 0.000022, "change_24h": 8.1, "market_cap": 1500000000, "volume_24h": 200000000, "image": "", "sparkline": [0.000018, 0.000022]}
+        {"id": "bonk", "symbol": "BONK", "name": "Bonk", "price": 0.000022, "change_24h": 8.1, "market_cap": 1500000000, "volume_24h": 200000000, "image": "", "sparkline": [0.000018, 0.000022]},
+        {"id": "floki", "symbol": "FLOKI", "name": "FLOKI", "price": 0.00018, "change_24h": 6.3, "market_cap": 1700000000, "volume_24h": 300000000, "image": "", "sparkline": [0.00016, 0.00018]},
+        {"id": "brett", "symbol": "BRETT", "name": "Brett", "price": 0.12, "change_24h": 11.2, "market_cap": 1200000000, "volume_24h": 180000000, "image": "", "sparkline": [0.10, 0.12]},
+        {"id": "turbo-token", "symbol": "TURBO", "name": "Turbo", "price": 0.005, "change_24h": -3.4, "market_cap": 500000000, "volume_24h": 90000000, "image": "", "sparkline": [0.006, 0.005]},
+        {"id": "mog-coin", "symbol": "MOG", "name": "Mog Coin", "price": 0.0000018, "change_24h": 22.1, "market_cap": 700000000, "volume_24h": 110000000, "image": "", "sparkline": [0.0000014, 0.0000018]},
+        {"id": "neiro-on-eth", "symbol": "NEIRO", "name": "Neiro", "price": 0.0012, "change_24h": -5.6, "market_cap": 450000000, "volume_24h": 75000000, "image": "", "sparkline": [0.0014, 0.0012]},
+        {"id": "memecoin", "symbol": "MEME", "name": "Memecoin", "price": 0.025, "change_24h": 4.8, "market_cap": 600000000, "volume_24h": 95000000, "image": "", "sparkline": [0.023, 0.025]},
+        {"id": "coq-inu", "symbol": "COQ", "name": "Coq Inu", "price": 0.0000004, "change_24h": 18.5, "market_cap": 250000000, "volume_24h": 45000000, "image": "", "sparkline": [0.0000003, 0.0000004]},
+        {"id": "myro", "symbol": "MYRO", "name": "Myro", "price": 0.08, "change_24h": -2.1, "market_cap": 320000000, "volume_24h": 55000000, "image": "", "sparkline": [0.085, 0.08]},
+        {"id": "toshi", "symbol": "TOSHI", "name": "Toshi", "price": 0.00035, "change_24h": 9.3, "market_cap": 280000000, "volume_24h": 40000000, "image": "", "sparkline": [0.00030, 0.00035]},
+        {"id": "baby-doge-coin", "symbol": "BABYDOGE", "name": "Baby Doge Coin", "price": 0.0000000021, "change_24h": 7.6, "market_cap": 350000000, "volume_24h": 60000000, "image": "", "sparkline": [0.0000000018, 0.0000000021]}
     ]
