@@ -296,13 +296,19 @@ def chat_endpoint(msg: ChatMessage):
     return {"response": response_text, "coins": [], "type": "generic"}
 
 
-# Mount the frontend directory to serve static files
-frontend_dir = os.path.join(os.path.dirname(__file__), "..", "frontend")
-app.mount("/static", StaticFiles(directory=frontend_dir), name="static")
+# Serve static files locally (fallback for non-Vercel environments)
+if not os.environ.get("VERCEL"):
+    frontend_dir = os.path.join(os.path.dirname(__file__), "..", "frontend")
+    if os.path.exists(frontend_dir):
+        app.mount("/static", StaticFiles(directory=frontend_dir), name="static")
+        @app.get("/")
+        def serve_index():
+            return FileResponse(os.path.join(frontend_dir, "index.html"))
 
-@app.get("/")
-def serve_index():
-    return FileResponse(os.path.join(frontend_dir, "index.html"))
+# Frontend serving is handled by Vercel rewrites in vercel.json
+# @app.get("/")
+# def serve_index():
+#     return FileResponse(os.path.join(frontend_dir, "index.html"))
 
 if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
