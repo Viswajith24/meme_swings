@@ -71,7 +71,7 @@ def get_social_feed():
 @app.get("/api/signals")
 def get_signals():
     """Returns enriched social signals with strength indicators."""
-    feed = generate_social_feed(count=12)
+    feed = generate_social_feed(count=50)
     for post in feed:
         # Add signal strength based on engagement + sentiment
         engagement = post.get("engagement", 0)
