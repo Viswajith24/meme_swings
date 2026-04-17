@@ -4,64 +4,117 @@ import random
 
 def calculate_predictions(coins):
     """
-    Takes the real coin data and injects our proprietary 'Hype Score' 
-    and Buy/Sell signals based on the algorithm.
+    Enhanced engine that calculates hype scores, confidence scores, 
+    and detailed factors for explainable AI.
     """
     results = []
     
     for coin in coins:
-        # Generate a simulated "Social Volume" metrics
-        base_volume = random.randint(1000, 50000)
+        symbol = coin["symbol"]
+        change_24h = coin.get("change_24h", 0)
         
-        # Correlation: If price is up a lot (>10%), hype is usually very high
-        change = coin.get("change_24h", 0)
+        # 1. Simulate Input Metrics (In a real app, these come from DB/Social APIs)
+        # ----------------------------------------------------------------------
+        # Simulate base metrics with some correlation to price
+        base_vol = random.randint(500, 20000)
+        sentiment_avg = 0.5
         
-        sentiment_avg = 0.5 # [-1.0 to 1.0]
-        if change > 10:
-            hype_modifier = random.uniform(1.5, 3.0)
-            sentiment_avg = random.uniform(0.6, 0.9)
-        elif change < -5:
-            hype_modifier = random.uniform(0.5, 1.0)
-            sentiment_avg = random.uniform(-0.5, 0.2)
+        if change_24h > 15:
+            vol_modifier = random.uniform(2.5, 5.0)
+            sentiment_avg = random.uniform(0.65, 0.95)
+        elif change_24h < -10:
+            vol_modifier = random.uniform(0.8, 1.5)
+            sentiment_avg = random.uniform(-0.6, 0.1)
         else:
-            hype_modifier = random.uniform(0.8, 1.5)
-            sentiment_avg = random.uniform(0.1, 0.6)
+            vol_modifier = random.uniform(1.2, 2.5)
+            sentiment_avg = random.uniform(0.2, 0.6)
             
-        social_volume_24h = int(base_volume * hype_modifier)
+        social_volume = int(base_vol * vol_modifier)
+        mention_spike = random.uniform(0.5, 4.5) # multiplier vs baseline
+        velocity = random.uniform(0.1, 0.9) # speed of discussion
         
-        # Calculate Hype Score (0 to 100)
-        # Formula: (Normalized Volume * 0.5) + (Sentiment * 50) + (Price Momentum * 0.5)
-        # For hackathon: we just map it to a pleasing number that looks correlated
-        raw_hype = (social_volume_24h / 50000 * 50) + ((sentiment_avg + 1) * 25)
-        hype_score = min(100, max(0, int(raw_hype)))
+        # 2. Factor Breakdown (Explainable AI)
+        # -----------------------------------
+        # Weighting factors (Total 100 pts)
+        factors = []
         
-        # Issue Prediction Signal
-        # Strong Buy, Buy, Hold, Sell, Strong Sell
-        if hype_score > 85 and change < 20: 
-            # High hype but price hasn't exploded yet = Strong Buy
-            signal = "Strong Buy"
-            confidence = random.uniform(80, 95)
-        elif hype_score > 70:
-            signal = "Buy"
-            confidence = random.uniform(60, 80)
-        elif hype_score < 30 and change < -10:
-            signal = "Strong Sell"
-            confidence = random.uniform(75, 90)
-        elif hype_score < 45:
-            signal = "Sell"
-            confidence = random.uniform(55, 75)
+        # Sentiment Factor
+        sentiment_impact = int((sentiment_avg + 0.2) * 35) # Max 42
+        factors.append({
+            "factor": "Sentiment Matrix",
+            "impact": sentiment_impact,
+            "explanation": f"Social sentiment is {round((sentiment_avg+1)/2*100)}% positive across platforms."
+        })
+        
+        # Volume Spike Factor
+        spike_impact = int(mention_spike * 10) # Max 45
+        factors.append({
+            "factor": "Mention Spike",
+            "impact": spike_impact,
+            "explanation": f"Discussion volume is {mention_spike:.1f}x higher than 7-day average."
+        })
+        
+        # Momentum/Velocity Factor
+        velocity_impact = int(velocity * 20) # Max 18
+        factors.append({
+            "factor": "Community Velocity",
+            "impact": velocity_impact,
+            "explanation": f"Discussion speed is {velocity:.1f} (High) as topics spread rapidly."
+        })
+        
+        # 3. Hype Score Calculation
+        # -------------------------
+        hype_score = min(100, max(0, sentiment_impact + spike_impact + velocity_impact))
+        
+        # 4. Confidence Score Calculation (Specified Formula)
+        # --------------------------------------------------
+        # Consistency: Are sentiment and volume aligned?
+        consistency = 1.0 - abs(sentiment_avg - (mention_spike / 5)) # Simplified
+        consistency = max(0.1, min(1.0, consistency))
+        
+        # Freshness: Simulated (how recent is the latest heavy volume)
+        freshness = random.uniform(0.7, 1.0) 
+        
+        # Accuracy: Simulated (historical success rate)
+        historical_accuracy = random.uniform(0.6, 0.95)
+        
+        # Formula: (consistency * 0.4) + (freshness * 0.3) + (historical_accuracy * 0.3)
+        confidence = (consistency * 0.4) + (freshness * 0.3) + (historical_accuracy * 0.3)
+        confidence_score = round(confidence * 100, 1)
+        
+        # 5. Prediction Labels
+        # --------------------
+        if hype_score >= 80 and confidence_score > 70:
+            label = "Strong Buy"
+            color = "green"
+        elif hype_score >= 60:
+            label = "Buy"
+            color = "cyan"
+        elif hype_score >= 40:
+            label = "Hold"
+            color = "orange"
+        elif hype_score >= 30:
+            label = "Watch"
+            color = "pink"
         else:
-            signal = "Hold"
-            confidence = random.uniform(40, 60)
+            label = "Avoid"
+            color = "red"
             
+        # 6. Assemble Result
+        # -----------------
         coin_with_prediction = dict(coin)
         coin_with_prediction["hype_metrics"] = {
             "hype_score": hype_score,
-            "social_volume_24h": social_volume_24h,
+            "social_volume_24h": social_volume,
             "avg_sentiment": round(sentiment_avg, 2),
-            "signal": signal,
-            "confidence": round(confidence, 1)
+            "signal": label,
+            "confidence": confidence_score,
+            "label": label,
+            "factors": factors,
+            "unusual_activity": mention_spike > 2.5,
+            "explanation": f"Prediction driven by {'positive' if sentiment_avg > 0 else 'negative'} sentiment and {'strong' if mention_spike > 2 else 'moderate'} social spike."
         }
         results.append(coin_with_prediction)
         
     return results
+

@@ -6,6 +6,9 @@ from pydantic import BaseModel
 from services.crypto_api import get_top_meme_coins
 from services.social_simulator import generate_social_feed
 from services.prediction import calculate_predictions
+from services.rag_insights import get_rag_insights
+from services.security import calculate_authenticity
+from services.alert_engine import get_latest_alerts
 import uvicorn
 import os
 import random
@@ -29,9 +32,37 @@ def health_check():
 
 @app.get("/api/coins")
 def get_coins():
+    print("--- [FETCHING ENRICHED COINS] ---")
+    coins = get_top_meme_coins()
+    enriched = calculate_predictions(coins)
+    print(f"Enriched count: {len(enriched)}, First coin has hype: {'hype_metrics' in enriched[0] if enriched else 'N/A'}")
+    return enriched
+
+@app.get("/api/market/{coin_id}")
+def get_market(coin_id: str):
+    """Returns detailed market metrics for a specific coin."""
+    from services.crypto_api import get_coin_market_data
+    data = get_coin_market_data(coin_id)
+    if not data:
+        return {"error": "Coin not found"}, 404
+    return data
+
+@app.get("/api/coins/trending")
+def get_trending():
+    """Returns coins with high social momentum spikes."""
     coins = get_top_meme_coins()
     predictions = calculate_predictions(coins)
-    return predictions
+    # Trending = high 24h change + high hype
+    trending = sorted(predictions, key=lambda c: (c["change_24h"] * 0.5 + c["hype_metrics"]["hype_score"] * 0.5), reverse=True)
+    return trending[:5]
+
+@app.get("/api/coins/search")
+def search_coins(q: str):
+    """Search tracked coins by name or symbol."""
+    coins = get_top_meme_coins()
+    q = q.lower()
+    results = [c for c in coins if q in c["name"].lower() or q in c["symbol"].lower()]
+    return results[:5]
 
 @app.get("/api/social-feed")
 def get_social_feed():
@@ -58,6 +89,42 @@ def get_signals():
         else:
             post["time_ago"] = f"{age // 60}m ago"
     return feed
+
+@app.get("/api/prediction/{coin_id}")
+def get_detailed_prediction(coin_id: str):
+    """Enhanced prediction endpoint with explainability and security checks."""
+    from services.crypto_api import get_coin_market_data
+    coin = get_coin_market_data(coin_id)
+    if not coin:
+        return {"error": "Coin not found"}, 404
+        
+    predictions = calculate_predictions([coin])
+    prediction = predictions[0]
+    
+    # 1. Get Pseudo-RAG Insights
+    insights = get_rag_insights(coin["id"])
+    
+    # 2. Get Security/Authenticity Score
+    # For simulation, we generate a larger feed of signals to analyze
+    mock_signals = generate_social_feed(count=50)
+    authenticity = calculate_authenticity(coin["id"], mock_signals)
+    
+    prediction["hype_metrics"]["insights"] = insights
+    prediction["hype_metrics"]["authenticity"] = authenticity
+    
+    return prediction
+
+@app.get("/api/security/authenticity/{coin_id}")
+def get_security_check(coin_id: str):
+    """Detailed adversarial hype analysis."""
+    mock_signals = generate_social_feed(count=50)
+    result = calculate_authenticity(coin_id, mock_signals)
+    return result
+
+@app.get("/api/alerts")
+def get_alerts_endpoint():
+    """Dynamic alert stream."""
+    return get_latest_alerts()
 
 @app.get("/api/predictions")
 def get_predictions():

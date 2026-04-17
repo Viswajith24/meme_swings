@@ -4,23 +4,7 @@ import uuid
 
 # A realistic simulation that generates tweets/reddit posts about our tracked coins.
 
-COINS = {
-    "dogecoin": {"tags": ["#DOGE", "$DOGE", "Dogecoin"], "base_sentiment": 0.6},
-    "shiba-inu": {"tags": ["#SHIB", "$SHIB", "ShibArmy"], "base_sentiment": 0.5},
-    "pepe": {"tags": ["#PEPE", "$PEPE", "Pepe"], "base_sentiment": 0.4},
-    "dogwifcoin": {"tags": ["#WIF", "$WIF", "dogwifhat"], "base_sentiment": 0.8},
-    "bonk": {"tags": ["#BONK", "$BONK"], "base_sentiment": 0.7},
-    "floki": {"tags": ["#FLOKI", "$FLOKI", "FlokiArmy"], "base_sentiment": 0.65},
-    "brett": {"tags": ["#BRETT", "$BRETT", "Brett"], "base_sentiment": 0.75},
-    "turbo-token": {"tags": ["#TURBO", "$TURBO", "TurboToken"], "base_sentiment": 0.5},
-    "mog-coin": {"tags": ["#MOG", "$MOG", "MogCoin"], "base_sentiment": 0.6},
-    "neiro-on-eth": {"tags": ["#NEIRO", "$NEIRO"], "base_sentiment": 0.45},
-    "memecoin": {"tags": ["#MEME", "$MEME", "Memecoin"], "base_sentiment": 0.55},
-    "coq-inu": {"tags": ["#COQ", "$COQ", "CoqInu"], "base_sentiment": 0.7},
-    "myro": {"tags": ["#MYRO", "$MYRO"], "base_sentiment": 0.5},
-    "toshi": {"tags": ["#TOSHI", "$TOSHI"], "base_sentiment": 0.55},
-    "baby-doge-coin": {"tags": ["#BABYDOGE", "$BABYDOGE", "BabyDoge"], "base_sentiment": 0.6}
-}
+from .crypto_api import get_top_meme_coins
 
 PLATFORMS = ["Twitter", "Reddit", "Telegram"]
 
@@ -49,18 +33,27 @@ def generate_social_feed(count=5):
     """Generates a list of recent social media posts with sentiment scores."""
     feed = []
     
+    coins_data = get_top_meme_coins()
+    if not coins_data:
+        return feed
+        
+    coin_ids = [c["id"] for c in coins_data]
+    
     # Randomly pick a "trending" coin for this batch to simulate a spike
-    trending_coin = random.choice(list(COINS.keys()))
+    trending_coin = random.choice(coin_ids)
     
     for _ in range(count):
         # 40% chance the post is about the trending coin
-        coin_id = trending_coin if random.random() < 0.4 else random.choice(list(COINS.keys()))
-        coin_data = COINS[coin_id]
-        tag = random.choice(coin_data["tags"])
+        coin_id = trending_coin if random.random() < 0.4 else random.choice(coin_ids)
+        coin_info = next((c for c in coins_data if c["id"] == coin_id), None)
+        symbol = coin_info["symbol"] if coin_info else coin_id.upper()
+        
+        tags = [f"#{symbol}", f"${symbol}", symbol]
+        tag = random.choice(tags)
         
         # Determine sentiment
         rand_val = random.random()
-        base_sent = coin_data["base_sentiment"]
+        base_sent = 0.55 # default base sentiment
         
         # Adjust base sentiment if this is the trending coin
         if coin_id == trending_coin:
