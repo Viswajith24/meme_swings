@@ -475,15 +475,16 @@ async function loadPredictions() {
         const res = await fetch('/api/coins');
         const coins = await res.json();
         
-        // Limit to top 12 to prevent backend UI freezing with 100 coins
-        const topCoins = coins.slice(0, 12);
+        // Load all 100 coins as requested
+        const topCoins = coins;
         
-        const predictionData = [];
-        for (const coin of topCoins) {
-            const detailRes = await fetch(`/api/prediction/${coin.id}`);
-            const detail = await detailRes.json();
-            predictionData.push(detail);
-        }
+        // Fetch all of them in parallel
+        const predictionData = await Promise.all(
+            topCoins.map(async (coin) => {
+                const detailRes = await fetch(`/api/prediction/${coin.id}`);
+                return await detailRes.json();
+            })
+        );
         
         grid.innerHTML = predictionData.map((coin, i) => renderPredictionCard(coin, i)).join('');
         
