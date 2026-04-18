@@ -40,21 +40,22 @@ body {
 /* Ticker */
 .ticker-wrap {
     width: 100%;
-    background: #000;
-    border-bottom: 1px solid var(--color-cyan);
-    padding: 8px 0;
+    background: linear-gradient(180deg, #0a1118 0%, #000000 100%) !important;
+    padding: 10px 0;
     overflow: hidden;
     position: relative;
     font-family: 'JetBrains Mono', monospace;
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     font-weight: 500;
     display: flex;
+    z-index: 100;
 }
 
 .ticker {
     display: inline-block;
     white-space: nowrap;
-    animation: ticker 40s linear infinite;
+    animation: ticker 400s linear infinite;
+    padding-left: 20px;
 }
 
 @keyframes ticker {
@@ -65,12 +66,12 @@ body {
 .ticker-item {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-    margin-right: 40px;
+    gap: 6px;
+    margin-right: 48px;
     color: var(--text-muted);
 }
-.ticker-symbol { color: var(--text-main); font-weight: 700; }
-.ticker-val { color: var(--text-muted); }
+.ticker-symbol { color: var(--text-main); font-weight: 700; letter-spacing: 0.5px; }
+.ticker-val { color: #5c6784; font-size: 0.75rem; }
 
 /* Container */
 .container {
@@ -1221,6 +1222,169 @@ body {
     color: var(--color-green);
     opacity: 0.5;
     cursor: default;
+}
+
+/* ===============================================
+   NEW ENHANCEMENTS
+   =============================================== */
+
+.smart-filters {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.smart-filter {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border-color);
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.smart-filter:hover {
+    background: rgba(0, 255, 163, 0.1);
+    border-color: rgba(0, 255, 163, 0.3);
+    color: var(--color-cyan);
+}
+
+.auth-section {
+    margin-bottom: 12px;
+}
+
+.auth-badge {
+    transition: all 0.2s;
+}
+
+.auth-badge:hover {
+    background: rgba(255,255,255,0.05);
+}
+
+.market-metrics-card {
+    transition: all 0.2s;
+}
+
+.market-metrics-card:hover {
+    background: rgba(255,255,255,0.05) !important;
+}
+
+.consistency-gauge {
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.consistency-gauge:hover {
+    transform: scale(1.05);
+}
+
+/* ===============================================
+   SEARCH COMPONENT
+   =============================================== */
+.search-container {
+    max-width: 600px;
+    margin: 32px 0;
+    position: relative;
+    z-index: 50;
+}
+
+.search-box {
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 12px 16px;
+    gap: 12px;
+    transition: all 0.2s ease;
+}
+
+.search-box:focus-within {
+    border-color: var(--color-cyan);
+    background: rgba(0, 255, 163, 0.05);
+    box-shadow: 0 0 20px rgba(0, 255, 163, 0.2);
+}
+
+.search-icon {
+    color: var(--text-muted);
+    transition: color 0.2s;
+}
+
+.search-box:focus-within .search-icon {
+    color: var(--color-cyan);
+}
+
+#coin-search-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--text-main);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1rem;
+}
+
+#coin-search-input::placeholder {
+    color: var(--text-muted);
+    opacity: 0.7;
+}
+
+.search-suggestions {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    margin-top: 8px;
+    background: #0f1319;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 8px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.suggestion-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.suggestion-item:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.suggestion-info {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+}
+
+.suggestion-symbol {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    color: var(--text-main);
+    font-size: 1.1rem;
+}
+
+.suggestion-name {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.suggestion-price {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    color: var(--color-green);
+    font-size: 0.9rem;
 }
 
 /* ===============================================
