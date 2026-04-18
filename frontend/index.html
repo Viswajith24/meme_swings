@@ -7,14 +7,9 @@
     <meta name="description" content="Real-time sentiment analysis and AI predictions for meme coins. Track DOGE, SHIB, PEPE, and 12+ more coins with live social intelligence.">
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700;900&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/static/styles.css?v=1.1">
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="/static/styles.css">
 </head>
 <body>
-    <!-- Alert Toasts -->
-    <div id="alert-toast-container" class="alert-toast-container"></div>
-
     <!-- Rolling Ticker -->
     <div class="ticker-wrap">
         <div class="ticker" id="ticker-content">
@@ -49,22 +44,6 @@
             <section class="hero">
                 <h1>Track the <span class="text-cyan">hype.</span><br>Predict the <span class="text-cyan">swing.</span></h1>
                 <p class="subtitle">Real-time sentiment analysis across X, Reddit & Telegram —<br>powered by AI to surface meme coin momentum before the crowd.</p>
-                
-                <!-- Feature 1: Intelligent Discovery -->
-                <div class="search-container">
-                    <div class="search-box">
-                        <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                        </svg>
-                        <input type="text" id="coin-search-input" placeholder="Search meme coins (e.g. DOGE, PEPE)..." autocomplete="off">
-                    </div>
-                    <div id="search-suggestions" class="search-suggestions" style="display: none;"></div>
-                    <div class="smart-filters">
-                        <span class="smart-filter" data-filter="trending">🔥 Trending Now</span>
-                        <span class="smart-filter" data-filter="rising">📈 Rising Sentiment</span>
-                        <span class="smart-filter" data-filter="unusual">⚠️ Unusual Activity</span>
-                    </div>
-                </div>
             </section>
 
         <!-- Stats Grid -->
