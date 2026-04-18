@@ -146,12 +146,12 @@ function initSearchAutocomplete() {
     smartFilters.forEach(filter => {
         filter.addEventListener('click', async (e) => {
             const type = e.target.getAttribute('data-filter');
-            input.value = \`Filtering: \${e.target.innerText}\`;
+            input.value = `Filtering: ${e.target.innerText}`;
             
             try {
                 // In a real app we would hit different endpoints based on filter type.
                 // For this demo we'll just fetch trending for all to show the UI interaction.
-                const res = await fetch(\`/api/coins/trending\`);
+                const res = await fetch(`/api/coins/trending`);
                 const data = await res.json();
                 
                 if (data.length > 0) {
